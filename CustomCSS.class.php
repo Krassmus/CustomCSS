@@ -6,7 +6,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     
     public function __construct() {
         parent::__construct();
-        $navigation = new Navigation(_("CSS"), PluginEngine::getURL($this, array(), 'css'));
+        $navigation = new Navigation(_("Mein CSS"), PluginEngine::getURL($this, array(), 'css'));
         Navigation::addItem("/links/settings/customcss", $navigation);
         $stylesheet = CssModification::findMine();
         if ($stylesheet['css']) {
@@ -27,6 +27,23 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         $template->set_attribute("plugin", $this);
         $template->set_attribute("customcss", $stylesheet);
         echo $template->render();
+    }
+
+    public function share_action() {
+        $stylesheet = CssModification::findMine();
+        $output = array();
+        if (class_exists("BlubberPosting") && $GLOBALS['user']->id !== "nobody" && Request::isPost()) {
+            $posting = new BlubberPosting();
+            $posting['Seminar_id'] = $GLOBALS['user']->id;
+            $posting['user_id'] = $GLOBALS['user']->id;
+            $posting['description'] = "#MeinCSS für Stud.IP\n\n[code]\n".$stylesheet['css']."\n[/code]\n\n--Zum Ausprobieren, kopiere das CSS und füge es in [MeinCSS]".$GLOBALS['ABSOLUTE_URI_STUDIP']."plugins.php/customcss/css ein.--";
+            $posting['name'] = "#MeinCSS";
+            $posting['context_type'] = "public";
+            $posting['external_contact'] = "0";
+            $posting['parent_id'] = "0";
+            $posting->store();
+        }
+        echo json_encode(studip_utf8encode($output));
     }
     
     protected function getTemplate($template_file_name, $layout = "without_infobox") {

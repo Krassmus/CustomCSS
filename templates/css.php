@@ -28,7 +28,6 @@
 <script>
 jQuery(function () {
     jQuery("#custom_css").bind("keydown", function (event) {
-        console.log(event.keyCode);
         if (event.keyCode === 9) { //tab
             jQuery("#custom_css").insertAtCaret("    ");
             return false;
@@ -38,6 +37,21 @@ jQuery(function () {
             line = line.substr(0, this.selectionStart);
             line = line.substr(lastIndexOf("n"));
             console.log(line);
+        }
+    });
+    jQuery("#share_via_blubber").bind("click", function () {
+        if (window.confirm("Jetzt Ihr CSS in Blubber öffentlich machen und teilen?")) {
+            jQuery.ajax({
+                'url': STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/customcss/share",
+                'type': "post",
+                'dataType': "json",
+                'success': function (output) {
+                    alert("Ihr CSS steht jetzt im globalen Blubberstream.");
+                }
+            });
+            return false;
+        } else {
+            return false;
         }
     });
 });
@@ -78,7 +92,7 @@ $infobox = array(
         'kategorie' => _("Information"),
         'eintrag' => array(
             array('icon' => "icons/16/black/info", 'text' => _("Geben Sie eigenes CSS ein, das Stud.IP exklusiv nur für Sie anders aussehen lässt.")),
-            array('icon' => "icons/16/black/community", 'text' => _("Tauschen Sie Ihr CSS aus mit anderen über Blubber."))
+            array('icon' => "icons/16/black/community", 'text' => sprintf(_("Teilen Sie Ihr CSS mit anderen über %sBlubber%s."), '<a href="'.URLHelper::getLink("plugins.php/blubber/streams/global?hash=MeinCSS").'" id="share_via_blubber">', '</a>'))
         )
     )
 );
