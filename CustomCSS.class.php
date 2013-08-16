@@ -20,6 +20,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     
     public function css_action() {
         Navigation::activateItem('/links/settings/customcss');
+        PageLayout::setTabNavigation('/links/settings');
         $stylesheet = CssModification::findMine();
         if (Request::isPost() && Request::submitted("custom_css")) {
             $stylesheet['css'] = Request::get("custom_css");
