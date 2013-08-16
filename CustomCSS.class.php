@@ -13,6 +13,10 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
             PageLayout::addBodyElements('<style>'.($stylesheet['css']).'</style>');
         }
     }
+
+    protected function getDisplayName() {
+        return _("Mein CSS");
+    }
     
     public function css_action() {
         Navigation::activateItem('/links/settings/customcss');

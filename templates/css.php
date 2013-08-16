@@ -91,7 +91,7 @@ $infobox = array(
     array(
         'kategorie' => _("Information"),
         'eintrag' => array(
-            array('icon' => "icons/16/black/info", 'text' => _("Geben Sie eigenes CSS ein, das Stud.IP exklusiv nur für Sie anders aussehen lässt.")),
+            array('icon' => "icons/16/black/code", 'text' => _("Geben Sie eigenes CSS ein, das Stud.IP exklusiv nur für Sie anders aussehen lässt.")),
             array('icon' => "icons/16/black/community", 'text' => sprintf(_("Teilen Sie Ihr CSS mit anderen über %sBlubber%s."), '<a href="'.URLHelper::getLink("plugins.php/blubber/streams/global?hash=MeinCSS").'" id="share_via_blubber">', '</a>'))
         )
     )
