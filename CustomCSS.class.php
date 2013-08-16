@@ -6,7 +6,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     
     public function __construct() {
         parent::__construct();
-        $navigation = new AutoNavigation(_("CSS"), PluginEngine::getURL($this, array(), 'css'));
+        $navigation = new Navigation(_("CSS"), PluginEngine::getURL($this, array(), 'css'));
         Navigation::addItem("/links/settings/customcss", $navigation);
         $stylesheet = CssModification::findMine();
         if ($stylesheet['css']) {
@@ -15,10 +15,12 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     }
     
     public function css_action() {
+        Navigation::activateItem('/links/settings/customcss');
         $stylesheet = CssModification::findMine();
         if (Request::isPost() && Request::submitted("custom_css")) {
             $stylesheet['css'] = Request::get("custom_css");
             $stylesheet->store();
+            header("Location: ".URLHelper::getURL("plugins.php/customcss/css", array(), null));
         }
         
         $template = $this->getTemplate("css.php");

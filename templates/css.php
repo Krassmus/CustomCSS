@@ -5,8 +5,22 @@
  * and open the template in the editor.
  */
 ?>
+<style>
+    textarea[name=custom_css] {
+        background-color: #eeeeee;
+        border: thin solid #aaaaaa;
+        margin: 5px;
+        width: 95%;
+        height: 400px; 
+        font-family: Courier New, MONOSPACE
+    }
+    textarea[name=custom_css]:focus {
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    }
+</style>
+
 <form action="?" method="post">
-    <textarea name="custom_css" id="custom_css" style="width: 100%; height: 400px; font-family: Courier New, MONOSPACE"><?= htmlReady($customcss['css']) ?></textarea>
+    <textarea name="custom_css" id="custom_css"><?= htmlReady($customcss['css']) ?></textarea>
     <br>
     <?= \Studip\Button::create(_("speichern")) ?>
 </form>
@@ -59,7 +73,15 @@ insertAtCaret: function(myValue){
 
 
 <?
-$infobox = array();
+$infobox = array(
+    array(
+        'kategorie' => _("Information"),
+        'eintrag' => array(
+            array('icon' => "icons/16/black/info", 'text' => _("Geben Sie eigenes CSS ein, das Stud.IP exklusiv nur für Sie anders aussehen lässt.")),
+            array('icon' => "icons/16/black/community", 'text' => _("Tauschen Sie Ihr CSS aus mit anderen über Blubber."))
+        )
+    )
+);
 
 $infobox = array(
     'picture' => $GLOBALS['ABSOLUTE_URI_STUDIP'].$plugin->getPluginPath()."/assets/infobox.jpg",
