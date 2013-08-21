@@ -3,16 +3,50 @@
 require_once dirname(__file__)."/models/CssModification.php";
 
 class CustomCSS extends StudIPPlugin implements SystemPlugin {
+
+    protected $cache;
+    protected $cache_index;
     
     public function __construct() {
         parent::__construct();
+
         $navigation = new Navigation(_("Mein CSS"), PluginEngine::getURL($this, array(), 'css'));
         Navigation::addItem("/links/settings/customcss", $navigation);
-        $stylesheet = CssModification::findMine();
-        if ($stylesheet['css']) {
-            PageLayout::addBodyElements('<style>'.($stylesheet['css']).'</style>');
+
+        $this->cache       = StudipCacheFactory::getCache();
+        $this->cache_index = sprintf('custom-css-%s', $GLOBALS['user']->id);
+
+        $css = $this->cache->read($this->cache_index);
+        if ($css === false) {
+            $stylesheet = CssModification::findMine();
+            if ($stylesheet['css']) {
+                $css  = $stylesheet['css'];
+
+                $less = '';
+                foreach (file($GLOBALS['ABSOLUTE_PATH_STUDIP'] . 'assets/stylesheets/mixins.less') as $mixin) {
+                    if (!preg_match('/@import "(.*)";/', $mixin, $match)) {
+                        continue;
+                    }
+                    $less .= file_get_contents($GLOBALS['ABSOLUTE_PATH_STUDIP'] . 'assets/stylesheets/' . $match[1]) . "\n";
+                }
+                $less .= sprintf('@image-path: "%s";', Assets::url('images')) . "\n";
+                $less .= '@icon-path: "@{image-path}/icons/16";' . "\n";
+                $less .= $css;
+
+                require_once 'vendor/lessphp/lessc.inc.php';
+                $compiler = new lessc();
+                $css = $compiler->parse($less, array(
+                    'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
+                ));
+
+                $this->cache->write($this->cache_index, $css);
+            }
+        }
+        if ($css) {
+            PageLayout::addBodyElements('<style>' . $css . '</style>');
         }
     }
+    
 
     protected function getDisplayName() {
         return _("Mein CSS");
@@ -25,6 +59,9 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         if (Request::isPost() && Request::submitted("custom_css")) {
             $stylesheet['css'] = Request::get("custom_css");
             $stylesheet->store();
+
+            $this->cache->expire($this->cache_index);
+
             header("Location: ".URLHelper::getURL("plugins.php/customcss/css", array(), null));
         }
         
