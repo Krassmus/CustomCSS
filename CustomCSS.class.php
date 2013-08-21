@@ -6,6 +6,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
 
     protected $cache;
     protected $cache_index;
+    protected $editor_themes = array();
     
     public function __construct() {
         parent::__construct();
@@ -47,6 +48,27 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         }
     }
     
+    public function initialize()
+    {
+        // Include CodeMirror syntax highlighted editor <http://codemirror.net>
+        PageLayout::addStylesheet($this->getPluginURL(). '/assets/codemirror/codemirror.css');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/codemirror.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/active-line.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/match-brackets.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/css.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/less.js');
+        
+        foreach (glob($this->getPluginPath() . '/assets/codemirror/theme/*.css') as $theme) {
+            $theme = str_replace($this->getPluginPath(), '', $theme);
+            PageLayout::addStylesheet($this->getPluginURL() . $theme);
+
+            $this->editor_themes[] = basename($theme, '.css');
+        }
+
+        PageLayout::addScript($this->getPluginURL(). '/assets/customcss.js');
+        $this->addStylesheet('assets/customcss.less');
+    }
+    
 
     protected function getDisplayName() {
         return _("Mein CSS");
@@ -68,6 +90,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         $template = $this->getTemplate("css.php");
         $template->set_attribute("plugin", $this);
         $template->set_attribute("customcss", $stylesheet);
+        $template->set_attribute('editor_themes', $this->editor_themes);
         echo $template->render();
     }
 
