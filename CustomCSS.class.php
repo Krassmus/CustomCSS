@@ -113,6 +113,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
 
         if (Request::isPost()) {
             $stylesheet['html'] = Request::get('html');
+            $stylesheet['css'] = $stylesheet['css'] ?: '';
             $stylesheet->store();
 
             PageLayout::postMessage(MessageBox::info(_('Ihr HTML wurde gespeichert.')));
