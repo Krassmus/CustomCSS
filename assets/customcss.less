@@ -1,0 +1,22 @@
+.CodeMirror {
+    background-color: #eeeeee;
+    border: thin solid #aaaaaa;
+    margin: 5px;
+    height: 400px; 
+    font-family: Courier New, monospace;
+}
+.CodeMirror-focused {
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+}
+
+.customcss-share {
+    .clearfix;
+    &:before {
+        content: url("@{image-path}/messagebox/question.png");
+        float: left;
+        margin-right: 1em;
+    }
+}
+.customcss-share-shared:before {
+    content: url("@{image-path}/messagebox/success.png");
+}

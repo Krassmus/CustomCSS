@@ -6,12 +6,18 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
 
     protected $cache;
     protected $cache_index;
+    protected $editor_themes = array();
     
     public function __construct() {
         parent::__construct();
 
-        $navigation = new Navigation(_("Mein CSS"), PluginEngine::getURL($this, array(), 'css'));
-        Navigation::addItem("/links/settings/customcss", $navigation);
+        $navigation = new Navigation(_('Mein CSS'), PluginEngine::getURL($this, array(), 'css'));
+        Navigation::addItem('/links/settings/customcss', $navigation);
+        $navigation = new Navigation(_('CSS'), PluginEngine::getURL($this, array(), 'css'));
+        Navigation::addItem('/links/settings/customcss/css', $navigation);
+
+        $navigation = new Navigation(_('HTML'), PluginEngine::getURL($this, array(), 'html'));
+        Navigation::addItem('/links/settings/customcss/html', $navigation);
 
         $this->cache       = StudipCacheFactory::getCache();
         $this->cache_index = sprintf('custom-css-%s', $GLOBALS['user']->id);
@@ -47,13 +53,36 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         }
     }
     
+    public function initialize()
+    {
+        // Include CodeMirror syntax highlighted editor <http://codemirror.net>
+        PageLayout::addStylesheet($this->getPluginURL(). '/assets/codemirror/codemirror.css');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/codemirror.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/active-line.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/match-brackets.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/css.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/less.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/xml.js');
+        PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/htmlmixed.js');
+        
+        foreach (glob($this->getPluginPath() . '/assets/codemirror/theme/*.css') as $theme) {
+            $theme = str_replace($this->getPluginPath(), '', $theme);
+            PageLayout::addStylesheet($this->getPluginURL() . $theme);
+
+            $this->editor_themes[] = basename($theme, '.css');
+        }
+
+        PageLayout::addScript($this->getPluginURL(). '/assets/customcss.js');
+        $this->addStylesheet('assets/customcss.less');
+    }
+    
 
     protected function getDisplayName() {
         return _("Mein CSS");
     }
     
     public function css_action() {
-        Navigation::activateItem('/links/settings/customcss');
+        Navigation::activateItem('/links/settings/customcss/css');
         PageLayout::setTabNavigation('/links/settings');
         $stylesheet = CssModification::findMine();
         if (Request::isPost() && Request::submitted("custom_css")) {
@@ -62,12 +91,41 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
 
             $this->cache->expire($this->cache_index);
 
-            header("Location: ".URLHelper::getURL("plugins.php/customcss/css", array(), null));
+            PageLayout::postMessage(MessageBox::info(_('Ihr CSS wurde gespeichert.')));
+
+            header('Location: '.PluginEngine::getURL($this, array(), 'css'));
+            die;
         }
         
         $template = $this->getTemplate("css.php");
         $template->set_attribute("plugin", $this);
         $template->set_attribute("customcss", $stylesheet);
+        $template->set_attribute('editor_themes', $this->editor_themes);
+        echo $template->render();
+    }
+    
+    public function html_action()
+    {
+        Navigation::activateItem('/links/settings/customcss/html');
+        PageLayout::setTabNavigation('/links/settings');
+        
+        $stylesheet = CssModification::findMine();
+
+        if (Request::isPost()) {
+            $stylesheet['html'] = Request::get('html');
+            $stylesheet->store();
+
+            PageLayout::postMessage(MessageBox::info(_('Ihr HTML wurde gespeichert.')));
+
+            header('Location: ' . PluginEngine::getURL($this, array(), 'html'));
+            die;
+        }
+        
+        $template = $this->getTemplate('html.php');
+        $template->html          = $stylesheet['html'];
+        $template->plugin        = $this;
+        $template->editor_themes = $this->editor_themes;
+        $template->mode          = Request::option('mode', 'display');
         echo $template->render();
     }
 
