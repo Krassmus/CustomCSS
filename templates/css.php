@@ -1,5 +1,5 @@
 <form action="?" method="post">
-    <textarea name="custom_css" id="custom_css"><?= htmlReady($customcss['css']) ?></textarea>
+    <textarea name="custom_css" id="customcss-editor" data-mode="less"><?= htmlReady($customcss['css']) ?></textarea>
     <br>
     <?= \Studip\Button::create(_("speichern")) ?>
 </form>

@@ -68,8 +68,10 @@
         });
         return false;
     }).ready(function () {
-        editor = CodeMirror.fromTextArea($('#custom_css')[0], {
-            mode: 'less',
+        var element = $('#customcss-editor'),
+            mode    = element.data().mode || 'less';
+        editor = CodeMirror.fromTextArea(element[0], {
+            mode: mode,
             theme: getCookie('customcss-theme') || 'default',
             lineNumbers: true,
             styleActiveLine: true,
