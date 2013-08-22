@@ -69,7 +69,12 @@
         return false;
     }).ready(function () {
         var element = $('#customcss-editor'),
-            mode    = element.data().mode || 'less';
+            mode;
+        if (element.length === 0) {
+            return;
+        }
+
+        mode = element.data().mode || 'less';
         editor = CodeMirror.fromTextArea(element[0], {
             mode: mode,
             theme: getCookie('customcss-theme') || 'default',
