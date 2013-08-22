@@ -1,5 +1,5 @@
 <?php
-class InitPlugin extends DBMigration
+class AddHtml extends DBMigration
 {
     function up() 
     {
