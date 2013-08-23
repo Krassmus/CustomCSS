@@ -41,11 +41,15 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
 
                 require_once 'vendor/lessphp/lessc.inc.php';
                 $compiler = new lessc();
-                $css = $compiler->parse($less, array(
-                    'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
-                ));
-
-                $this->cache->write($this->cache_index, $css);
+                try {
+                    $css = $compiler->parse($less, array(
+                        'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
+                    ));
+                    $this->cache->write($this->cache_index, $css);
+                } catch(Exception $e) {
+                    PageLayout::clearMessages();
+                    PageLayout::postMessage(MessageBox::error(_("Ihr Stylesheet Syntaxfehler.")));
+                }
             }
         }
         if ($css) {
