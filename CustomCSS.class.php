@@ -48,7 +48,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
                     $this->cache->write($this->cache_index, $css);
                 } catch(Exception $e) {
                     PageLayout::clearMessages();
-                    PageLayout::postMessage(MessageBox::error(_("Ihr Stylesheet Syntaxfehler.")));
+                    PageLayout::postMessage(MessageBox::error(_("Ihr Stylesheet enthält Syntaxfehler.")));
                 }
             }
         }
