@@ -45,10 +45,15 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
                 $parser->setVariables(array(
                     'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
                 ));
-                $parser->parseString($less);
-                $css = $parser->getCSS();
+                try {
+                    $parser->parseString($less);
+                    $css = $parser->getCSS();
 
-                $this->cache->write($this->cache_index, $css);
+                    $this->cache->write($this->cache_index, $css);
+                } catch(Exception $e) {
+                    PageLayout::clearMessages();
+                    PageLayout::postMessage(MessageBox::error(_("Ihr Stylesheet enthält Syntaxfehler.")));
+                }
             }
         }
         if ($css) {
