@@ -39,12 +39,16 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
                 $less .= '@icon-path: "@{image-path}/icons/16";' . "\n";
                 $less .= $css;
 
-                require_once 'vendor/lessphp/lessc.inc.php';
-                $compiler = new lessc();
+                require_once 'vendor/mishal-iless/lib/ILess/Autoloader.php';
+                ILess_Autoloader::register();
+                $parser = new ILess_Parser();
+                $parser->setVariables(array(
+                    'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
+                ));
                 try {
-                    $css = $compiler->parse($less, array(
-                        'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
-                    ));
+                    $parser->parseString($less);
+                    $css = $parser->getCSS();
+
                     $this->cache->write($this->cache_index, $css);
                 } catch(Exception $e) {
                     PageLayout::clearMessages();
@@ -117,6 +121,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
 
         if (Request::isPost()) {
             $stylesheet['html'] = Request::get('html');
+            $stylesheet['css'] = $stylesheet['css'] ?: '';
             $stylesheet->store();
 
             PageLayout::postMessage(MessageBox::info(_('Ihr HTML wurde gespeichert.')));
