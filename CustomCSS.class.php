@@ -39,16 +39,19 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
                 $less .= '@icon-path: "@{image-path}/icons/16";' . "\n";
                 $less .= $css;
 
-                require_once 'vendor/mishal-iless/lib/ILess/Autoloader.php';
-                ILess_Autoloader::register();
-                $parser = new ILess_Parser();
-                $parser->setVariables(array(
-                    'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
-                ));
                 try {
-                    $parser->parseString($less);
-                    $css = $parser->getCSS();
-
+                    if (class_exists('Assets\\Compiler')) {
+                        $css = Assets\Compiler::compileLESS($less);
+                    } else {
+                        require_once 'vendor/mishal-iless/lib/ILess/Autoloader.php';
+                        ILess_Autoloader::register();
+                        $parser = new ILess_Parser();
+                        $parser->setVariables(array(
+                            'image-path' => '"' . substr(Assets::image_path('placeholder.png'), 0, -15) . '"',
+                        ));
+                        $parser->parseString($less);
+                        $css = $parser->getCSS();
+                    }
                     $this->cache->write($this->cache_index, $css);
                 } catch(Exception $e) {
                     PageLayout::clearMessages();
