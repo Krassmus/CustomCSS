@@ -12,12 +12,10 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         parent::__construct();
 
         $navigation = new Navigation(_('Mein CSS'), PluginEngine::getURL($this, array(), 'css'));
-        Navigation::addItem('/settings/customcss', $navigation);
-        $navigation = new Navigation(_('CSS'), PluginEngine::getURL($this, array(), 'css'));
-        Navigation::addItem('/settings/customcss/css', $navigation);
+        Navigation::addItem('/profile/settings/customcss', $navigation);
 
-        $navigation = new Navigation(_('HTML'), PluginEngine::getURL($this, array(), 'html'));
-        Navigation::addItem('/settings/customcss/html', $navigation);
+        $navigation = new Navigation(_('Mein HTML'), PluginEngine::getURL($this, array(), 'html'));
+        Navigation::addItem('/profile/settings/customcss_html', $navigation);
 
         $this->cache       = StudipCacheFactory::getCache();
         $this->cache_index = sprintf('custom-css-%s', $GLOBALS['user']->id);
@@ -93,7 +91,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     }
     
     public function css_action() {
-        Navigation::activateItem('/settings/customcss/css');
+        Navigation::activateItem('/profile/settings/customcss');
         $stylesheet = CssModification::findMine();
         if (Request::isPost() && Request::submitted("custom_css")) {
             $stylesheet['css'] = Request::get("custom_css");
@@ -116,7 +114,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     
     public function html_action()
     {
-        Navigation::activateItem('/settings/customcss/html');
+        Navigation::activateItem('/profile/settings/customcss_html');
 
         $stylesheet = CssModification::findMine();
 

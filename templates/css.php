@@ -7,16 +7,9 @@
 <?
 $infobox = array(
     array(
-        'kategorie' => _("Information"),
-        'eintrag' => array(
-            array('icon' => "icons/16/black/code", 'text' => _("Geben Sie eigenes CSS ein, das Stud.IP exklusiv nur für Sie anders aussehen lässt.")),
-            array('icon' => "icons/16/black/community", 'text' => sprintf(_("Teilen Sie Ihr CSS mit anderen über %sBlubber%s."), '<a href="'.URLHelper::getLink("plugins.php/blubber/streams/global?hash=MeinCSS").'" id="share_via_blubber">', '</a>'))
-        )
-    ),
-    array(
         'kategorie' => _('Einstellungen'),
         'eintrag' => array(
-          array('icon' => 'icons/16/black/admin', 'text' => $this->render_partial('settings')),   
+          array('icon' => 'icons/16/black/admin', 'text' => $this->render_partial('settings')),
         ),
     ),
 );
@@ -25,3 +18,13 @@ $infobox = array(
     'picture' => $GLOBALS['ABSOLUTE_URI_STUDIP'].$plugin->getPluginPath()."/assets/infobox.jpg",
     'content' => $infobox
 );
+
+$actions = new ActionsWidget();
+$actions->addLink(
+    _("Mein CSS über Blubber teilen."),
+    URLHelper::getURL("plugins.php/blubber/streams/global?hash=MeinCSS"),
+    'icons/16/black/community',
+    array(),
+    'share_via_blubber'
+);
+Sidebar::Get()->addWidget($actions);
