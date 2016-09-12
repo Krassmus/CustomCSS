@@ -165,7 +165,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
             } else {
                 PageLayout::setTitle(get_class($this));
             }
-            $template->set_layout($GLOBALS['template_factory']->open($layout === "without_infobox" ? 'layouts/base_without_infobox' : 'layouts/base'));
+            $template->set_layout($GLOBALS['template_factory']->open('layouts/base'));
         }
         return $template;
     }
