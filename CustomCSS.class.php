@@ -11,11 +11,13 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     public function __construct() {
         parent::__construct();
 
-        $navigation = new Navigation(_('Mein CSS'), PluginEngine::getURL($this, array(), 'css'));
-        Navigation::addItem('/profile/settings/customcss', $navigation);
+        if (Navigation::hasItem('/profile/settings')) {
+            $navigation = new Navigation(_('Mein CSS'), PluginEngine::getURL($this, array(), 'css'));
+            Navigation::addItem('/profile/settings/customcss', $navigation);
 
-        $navigation = new Navigation(_('Mein HTML'), PluginEngine::getURL($this, array(), 'html'));
-        Navigation::addItem('/profile/settings/customcss_html', $navigation);
+            $navigation = new Navigation(_('Mein HTML'), PluginEngine::getURL($this, array(), 'html'));
+            Navigation::addItem('/profile/settings/customcss_html', $navigation);
+        }
 
         $this->cache       = StudipCacheFactory::getCache();
         $this->cache_index = sprintf('custom-css-%s', $GLOBALS['user']->id);
