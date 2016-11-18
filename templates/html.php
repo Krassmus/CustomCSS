@@ -14,22 +14,17 @@
 <? endif; ?>
 
 <?
-$infobox = array(
-    array(
-        'kategorie' => _('Aktionen'),
-        'eintrag' => array(
-            array('icon' => "icons/16/black/edit", 'text' => sprintf(_('%sHTML bearbeiten%s'), '<a href="'.PluginEngine::getURL($plugin, array('mode' => 'edit'), 'html') . '">', '</a>'))
-        )
-    ),
-    array(
-        'kategorie' => _('Einstellungen'),
-        'eintrag' => array(
-          array('icon' => 'icons/16/black/admin', 'text' => $this->render_partial('settings')),   
-        ),
-    ),
+$actions = new ActionsWidget();
+$actions->addLink(
+    _("HTML bearebeiten."),
+    PluginEngine::getURL($plugin, array('mode' => 'edit'), 'html'),
+    Icon::create('edit'),
+    [],
+    'edit_html'
 );
+Sidebar::Get()->addWidget($actions);
 
-$infobox = array(
-    'picture' => $GLOBALS['ABSOLUTE_URI_STUDIP'].$plugin->getPluginPath()."/assets/infobox.jpg",
-    'content' => $infobox
-);
+$widget = new SidebarWidget();
+$widget->setTitle(_('Einstellungen'));
+$widget->addElement(new WidgetElement($this->render_partial('settings')));
+Sidebar::Get()->addWidget($widget);
