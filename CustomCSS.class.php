@@ -7,7 +7,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
     protected $cache;
     protected $cache_index;
     protected $editor_themes = array();
-    
+
     public function __construct() {
         parent::__construct();
 
@@ -63,7 +63,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
             PageLayout::addBodyElements('<style>' . $css . '</style>');
         }
     }
-    
+
     public function initialize()
     {
         // Include CodeMirror syntax highlighted editor <http://codemirror.net>
@@ -75,7 +75,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/less.js');
         PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/xml.js');
         PageLayout::addScript($this->getPluginURL(). '/assets/codemirror/htmlmixed.js');
-        
+
         foreach (glob($this->getPluginPath() . '/assets/codemirror/theme/*.css') as $theme) {
             $theme = str_replace($this->getPluginPath(), '', $theme);
             PageLayout::addStylesheet($this->getPluginURL() . $theme);
@@ -86,12 +86,12 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         PageLayout::addScript($this->getPluginURL(). '/assets/customcss.js');
         $this->addStylesheet('assets/customcss.less');
     }
-    
+
 
     protected function getDisplayName() {
         return _("Mein CSS");
     }
-    
+
     public function css_action() {
         Navigation::activateItem('/profile/settings/customcss');
         $stylesheet = CssModification::findMine();
@@ -106,14 +106,14 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
             header('Location: '.PluginEngine::getURL($this, array(), 'css'));
             die;
         }
-        
+
         $template = $this->getTemplate("css.php");
         $template->set_attribute("plugin", $this);
         $template->set_attribute("customcss", $stylesheet);
         $template->set_attribute('editor_themes', $this->editor_themes);
         echo $template->render();
     }
-    
+
     public function html_action()
     {
         Navigation::activateItem('/profile/settings/customcss_html');
@@ -130,7 +130,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
             header('Location: ' . PluginEngine::getURL($this, array(), 'html'));
             die;
         }
-        
+
         $template = $this->getTemplate('html.php');
         $template->html          = $stylesheet['html'];
         $template->plugin        = $this;
@@ -155,7 +155,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         }
         echo json_encode(studip_utf8encode($output));
     }
-    
+
     protected function getTemplate($template_file_name, $layout = "without_infobox") {
         if (!$this->template_factory) {
             $this->template_factory = new Flexi_TemplateFactory(dirname(__file__)."/templates");
@@ -171,5 +171,5 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
         }
         return $template;
     }
-    
+
 }

@@ -1,7 +1,8 @@
 <?php
-class InitPlugin extends DBMigration
+
+class InitPlugin extends Migration
 {
-    function up() 
+    public function up()
     {
         DBManager::get()->exec("
             CREATE TABLE IF NOT EXISTS `css_modifications` (

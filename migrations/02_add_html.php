@@ -1,7 +1,8 @@
 <?php
-class AddHtml extends DBMigration
+
+class AddHtml extends Migration
 {
-    function up() 
+    public function up()
     {
         DBManager::get()->exec("
             ALTER TABLE `css_modifications`
@@ -11,7 +12,7 @@ class AddHtml extends DBMigration
         SimpleORMap::expireTableScheme();
     }
 
-    function down()
+    public function down()
     {
         DBManager::get()->exec("
             ALTER TABLE `css_modifications`
