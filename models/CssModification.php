@@ -15,11 +15,12 @@ class CssModification extends SimpleORMap
         }
     }
 
-    public function __construct($id = null)
+    protected static function configure($config = array())
     {
-        $this->db_table = "css_modifications";
-        parent::__construct($id);
+        $config['db_table'] = 'css_modifications';
+        parent::configure($config);
     }
+
 }
 
 
