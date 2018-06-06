@@ -29,11 +29,12 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
                 $css  = $stylesheet['css'];
 
                 $less = '';
-                foreach (file($GLOBALS['ABSOLUTE_PATH_STUDIP'] . 'assets/stylesheets/mixins.less') as $mixin) {
+                $mixinFile = $GLOBALS['STUDIP_BASE_PATH'] . '/resources/assets/stylesheets/mixins.less';
+                foreach (file($mixinFile) as $mixin) {
                     if (!preg_match('/@import "(.*)";/', $mixin, $match)) {
                         continue;
                     }
-                    $less .= file_get_contents($GLOBALS['ABSOLUTE_PATH_STUDIP'] . 'assets/stylesheets/' . $match[1]) . "\n";
+                    $less .= file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/resources/assets/stylesheets/' . $match[1]) . "\n";
                 }
                 $less .= sprintf('@image-path: "%s";', Assets::url('images')) . "\n";
                 $less .= '@icon-path: "@{image-path}/icons/16";' . "\n";
@@ -55,7 +56,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
                     $this->cache->write($this->cache_index, $css);
                 } catch(Exception $e) {
                     PageLayout::clearMessages();
-                    PageLayout::postMessage(MessageBox::error(_("Ihr Stylesheet enthält Syntaxfehler.")));
+                    PageLayout::postMessage(MessageBox::error(_("Ihr Stylesheet enthÃ¤lt Syntaxfehler.")));
                 }
             }
         }
@@ -146,7 +147,7 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
             $posting = new BlubberPosting();
             $posting['Seminar_id'] = $GLOBALS['user']->id;
             $posting['user_id'] = $GLOBALS['user']->id;
-            $posting['description'] = "#MeinCSS für Stud.IP\n\n[code]\n".$stylesheet['css']."\n[/code]\n\n--Zum Ausprobieren, kopiere das CSS und füge es in [MeinCSS]".$GLOBALS['ABSOLUTE_URI_STUDIP']."plugins.php/customcss/css ein.--";
+            $posting['description'] = "#MeinCSS fÃ¼r Stud.IP\n\n[code]\n".$stylesheet['css']."\n[/code]\n\n--Zum Ausprobieren, kopiere das CSS und fÃ¼ge es in [MeinCSS]".$GLOBALS['ABSOLUTE_URI_STUDIP']."plugins.php/customcss/css ein.--";
             $posting['name'] = "#MeinCSS";
             $posting['context_type'] = "public";
             $posting['external_contact'] = "0";
