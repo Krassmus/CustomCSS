@@ -41,7 +41,9 @@ class CustomCSS extends StudIPPlugin implements SystemPlugin {
                 $less .= $css;
 
                 try {
-                    if (class_exists('Assets\\Compiler')) {
+                    if (class_exists('Assets\\LESSCompiler')) { // Stud.IP >= 4.4
+                        $css = Assets\LESSCompiler::getInstance()->compile($less);
+                    } elseif (class_exists('Assets\\Compiler')) { // Stud.IP >= 3.4
                         $css = Assets\Compiler::compileLESS($less);
                     } else {
                         require_once 'vendor/mishal-iless/lib/ILess/Autoloader.php';
